@@ -1,6 +1,6 @@
 # FF
 
-⚠️ Please switch to **develop** branch before.
+⚠️ Please switch to **develop** branch to see actual changes.
 
 ### Overview
 
