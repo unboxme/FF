@@ -19,15 +19,22 @@ public final class HTTPClient: HTTPClientProtocol {
     // MARK: Private properties
     private let baseURL: URL
     private let session: URLSession
+    private let delayedConfiguration: (() async -> Void)?
 
     // MARK: Init
-    public init(session: URLSession, baseURL: URL) {
+    public init(
+        session: URLSession,
+        baseURL: URL,
+        delayedConfiguration: (() async -> Void)? = nil
+    ) {
         self.session = session
         self.baseURL = baseURL
+        self.delayedConfiguration = delayedConfiguration
     }
 
     // MARK: HTTPClientProtocol
     public func request(_ request: HTTPRequest) async throws -> Data {
+        await delayedConfiguration?()
         let urlRequest = try makeURLRequest(for: request)
 
         let (data, response) = try await session.data(for: urlRequest)

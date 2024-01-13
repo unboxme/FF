@@ -14,6 +14,11 @@
 		E96CA0E42AE304D50022FC82 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96CA0E32AE304D50022FC82 /* ContentView.swift */; };
 		E96CA0E62AE304D60022FC82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E96CA0E52AE304D60022FC82 /* Assets.xcassets */; };
 		E96CA0F02AE422A20022FC82 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96CA0EF2AE422A20022FC82 /* App.swift */; };
+		E9A1CE8F2B53056900B02669 /* Core_KeyValueStorage in Resources */ = {isa = PBXBuildFile; fileRef = E9A1CE8E2B53056900B02669 /* Core_KeyValueStorage */; };
+		E9A1CE932B53106400B02669 /* APIKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = E9A1CE922B53106400B02669 /* APIKeys.json */; settings = {ASSET_TAGS = (APIKeys, ); }; };
+		E9A1CE962B5311A700B02669 /* SaveAPIKeysUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A1CE952B5311A700B02669 /* SaveAPIKeysUseCase.swift */; };
+		E9A1CE982B53121200B02669 /* OnDemandResourceMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A1CE972B53121200B02669 /* OnDemandResourceMetadata.swift */; };
+		E9A1CE9A2B53175200B02669 /* Core_KeyValueStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E9A1CE992B53175200B02669 /* Core_KeyValueStorage */; };
 		E9B4100A2B081F4D00D57247 /* Domain_Currencies in Frameworks */ = {isa = PBXBuildFile; productRef = E9B410092B081F4D00D57247 /* Domain_Currencies */; };
 		E9B4100C2B081F5000D57247 /* Core_API in Frameworks */ = {isa = PBXBuildFile; productRef = E9B4100B2B081F5000D57247 /* Core_API */; };
 		E9B410102B081FCA00D57247 /* CoreSpecific_Primitives in Frameworks */ = {isa = PBXBuildFile; productRef = E9B4100F2B081FCA00D57247 /* CoreSpecific_Primitives */; };
@@ -33,6 +38,10 @@
 		E96CA0E32AE304D50022FC82 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E96CA0E52AE304D60022FC82 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E96CA0EF2AE422A20022FC82 /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		E9A1CE8E2B53056900B02669 /* Core_KeyValueStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Core_KeyValueStorage; sourceTree = "<group>"; };
+		E9A1CE922B53106400B02669 /* APIKeys.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = APIKeys.json; sourceTree = "<group>"; };
+		E9A1CE952B5311A700B02669 /* SaveAPIKeysUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveAPIKeysUseCase.swift; sourceTree = "<group>"; };
+		E9A1CE972B53121200B02669 /* OnDemandResourceMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDemandResourceMetadata.swift; sourceTree = "<group>"; };
 		E9B4100D2B081FAE00D57247 /* CoreSpecific_FastForexAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreSpecific_FastForexAPI; sourceTree = "<group>"; };
 		E9B4100E2B081FAE00D57247 /* CoreSpecific_Primitives */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreSpecific_Primitives; sourceTree = "<group>"; };
 		E9BB125E2B0AAFFE0096A19F /* DomainSpecific_Balance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DomainSpecific_Balance; sourceTree = "<group>"; };
@@ -50,6 +59,7 @@
 				E9BB125D2B081FF00096A19F /* CoreSpecific_FastForexAPI in Frameworks */,
 				E9B4100A2B081F4D00D57247 /* Domain_Currencies in Frameworks */,
 				E9697FFB2B081ECF0079215E /* Core_Utils in Frameworks */,
+				E9A1CE9A2B53175200B02669 /* Core_KeyValueStorage in Frameworks */,
 				E9B410102B081FCA00D57247 /* CoreSpecific_Primitives in Frameworks */,
 				E9697FFD2B081ECF0079215E /* Domain_UserPortfolio in Frameworks */,
 			);
@@ -91,6 +101,8 @@
 				E96CA0EF2AE422A20022FC82 /* App.swift */,
 				E96CA0E32AE304D50022FC82 /* ContentView.swift */,
 				E96CA0E52AE304D60022FC82 /* Assets.xcassets */,
+				E9A1CE942B53114A00B02669 /* UseCases */,
+				E9A1CE902B53102D00B02669 /* OnDemandResources */,
 			);
 			path = FF;
 			sourceTree = "<group>";
@@ -113,6 +125,7 @@
 				E9697FEF2B081E4A0079215E /* Core_API */,
 				E9697FEE2B081E4A0079215E /* Core_DataBaseStorage */,
 				E9697FF12B081E4A0079215E /* Core_HTTPClient */,
+				E9A1CE8E2B53056900B02669 /* Core_KeyValueStorage */,
 				E9697FF02B081E4A0079215E /* Core_Utils */,
 			);
 			path = Core;
@@ -132,6 +145,23 @@
 				E9697FEA2B081DEB0079215E /* Domain_UserPortfolio */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		E9A1CE902B53102D00B02669 /* OnDemandResources */ = {
+			isa = PBXGroup;
+			children = (
+				E9A1CE922B53106400B02669 /* APIKeys.json */,
+				E9A1CE972B53121200B02669 /* OnDemandResourceMetadata.swift */,
+			);
+			path = OnDemandResources;
+			sourceTree = "<group>";
+		};
+		E9A1CE942B53114A00B02669 /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				E9A1CE952B5311A700B02669 /* SaveAPIKeysUseCase.swift */,
+			);
+			path = UseCases;
 			sourceTree = "<group>";
 		};
 		E9DDDAB42AE4336500CE87E8 /* Frameworks */ = {
@@ -175,6 +205,7 @@
 				E9B4100F2B081FCA00D57247 /* CoreSpecific_Primitives */,
 				E9BB125C2B081FF00096A19F /* CoreSpecific_FastForexAPI */,
 				E9BB12602B0AB0280096A19F /* DomainSpecific_Balance */,
+				E9A1CE992B53175200B02669 /* Core_KeyValueStorage */,
 			);
 			productName = FF;
 			productReference = E96CA0DE2AE304D50022FC82 /* FF.app */;
@@ -187,6 +218,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					APIKeys,
+				);
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				ORGANIZATIONNAME = "";
@@ -221,6 +255,8 @@
 			files = (
 				E96CA0E62AE304D60022FC82 /* Assets.xcassets in Resources */,
 				E9BB125F2B0AAFFE0096A19F /* DomainSpecific_Balance in Resources */,
+				E9A1CE932B53106400B02669 /* APIKeys.json in Resources */,
+				E9A1CE8F2B53056900B02669 /* Core_KeyValueStorage in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +269,8 @@
 			files = (
 				E96CA0E42AE304D50022FC82 /* ContentView.swift in Sources */,
 				E96CA0F02AE422A20022FC82 /* App.swift in Sources */,
+				E9A1CE962B5311A700B02669 /* SaveAPIKeysUseCase.swift in Sources */,
+				E9A1CE982B53121200B02669 /* OnDemandResourceMetadata.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,7 +422,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cannedapp.FF;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cannedapp.ohm.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -415,7 +453,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cannedapp.FF;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cannedapp.ohm.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -463,6 +501,10 @@
 		E9697FFC2B081ECF0079215E /* Domain_UserPortfolio */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain_UserPortfolio;
+		};
+		E9A1CE992B53175200B02669 /* Core_KeyValueStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Core_KeyValueStorage;
 		};
 		E9B410092B081F4D00D57247 /* Domain_Currencies */ = {
 			isa = XCSwiftPackageProductDependency;

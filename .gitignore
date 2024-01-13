@@ -41,3 +41,6 @@ Package.resolved
 
 ### Objective-C Patch ###
 *.xcscmblueprint
+
+## Sensitive files ##
+FF/OnDemandResources
