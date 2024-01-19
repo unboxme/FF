@@ -19,15 +19,69 @@ struct ContentView: View {
         }
         .padding()
         .onAppear() {
+
             Task {
-                let request = FastForexAPI.Endpoint.Currencies.GETRequest()
+                await dependencies.setup()
+
                 do {
-                    let response = try await dependencies.fastForexAPI.request(request)
-                    print(response)
+                    let baseCode = "RUB"
+                    let fiatRates = try await dependencies.fiatAssetsRatesRepository.read(from: .cachePreferred, for: baseCode)
+
+                    let userPortfolio = UserPortfolio(
+                        id: UUID().uuidString,
+                        name: "Test",
+                        assets: [
+                            UserPortfolioAsset(
+                                id: UUID().uuidString,
+                                code: "RUB",
+                                type: .fiat,
+                                balances: [
+                                    UserPortfolioAssetBalance(
+                                        id: UUID().uuidString,
+                                        amount: 100,
+                                        addedAt: .now
+                                    )
+                                ]
+                            ),
+                            UserPortfolioAsset(
+                                id: UUID().uuidString,
+                                code: "RUB",
+                                type: .fiat,
+                                balances: [
+                                    UserPortfolioAssetBalance(
+                                        id: UUID().uuidString,
+                                        amount: 100,
+                                        addedAt: .now
+                                    )
+                                ]
+                            ),
+                            UserPortfolioAsset(
+                                id: UUID().uuidString,
+                                code: "EUR",
+                                type: .fiat,
+                                balances: [
+                                    UserPortfolioAssetBalance(
+                                        id: UUID().uuidString,
+                                        amount: 1,
+                                        addedAt: .now
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                    let convertedPortfolio = ConvertedUserPortfolioFactory.make(
+                        from: userPortfolio,
+                        baseAssetCode: baseCode,
+                        baseAssetType: .fiat,
+                        rates: [.fiat: fiatRates]
+                    )
+
+                    let assets = ConvertedUserAssetsFactory.make(from: [convertedPortfolio])
+
+                    print(convertedPortfolio)
                 } catch {
                     print(error)
                 }
-
             }
         }
     }
@@ -40,14 +94,17 @@ import CoreSpecific_FastForexAPI
 import Core_Utils
 import Core_KeyValueStorage
 import CoreSpecific_Primitives
+import DomainSpecific_Balance
+import Core_DataBaseStorage
+import Domain_Currencies
+import Domain_UserPortfolio
 
 final class Dependencies {
     private(set) lazy var httpClient: HTTPClientProtocol = HTTPClient(
         session: .shared,
-        baseURL: URL(string: "https://api.fastforex.io")!
-    ) {
-        try? await self.saveAPIKeysUseCase.perform()
-    }
+        baseURL: URL(string: "https://api.fastforex.io")!,
+        requestEventHandler: requestEventHandler
+    )
     private(set) lazy var fastForexAPI: FastForexAPIProtocol = FastForexAPI(
         httpClient: httpClient,
         commonParameters: fastForexAPICommonParameters
@@ -59,6 +116,22 @@ final class Dependencies {
     private(set) lazy var saveAPIKeysUseCase: SaveAPIKeysUseCaseProtocol = SaveAPIKeysUseCase(
         secureStorage: secureStorage
     )
+    private(set) lazy var requestEventHandler: HTTPRequestEventHandler = RequestEventHandler(
+        saveAPIKeysUseCase: saveAPIKeysUseCase
+    )
+    private(set) lazy var fiatAssetsRatesRepository: FiatAssetsRatesRepositoryProtocol = FiatAssetsRatesRepository(
+        fastForexAPI: fastForexAPI,
+        dataBaseStorage: dataBaseStorage
+    )
+    private(set) lazy var fiatAssetsRepository: FiatAssetsRepositoryProtocol = FiatAssetsRepository(
+        fastForexAPI: fastForexAPI,
+        dataBaseStorage: dataBaseStorage
+    )
+    private(set) var dataBaseStorage: DataBaseStorageProtocol!
+
+    func setup() async {
+        dataBaseStorage = await DataBaseStorage()
+    }
 }
 
 struct FastForexAPICommonParameters: URLQueryItemsConvertible {
@@ -70,5 +143,13 @@ struct FastForexAPICommonParameters: URLQueryItemsConvertible {
         return [
             URLQueryItem(name: "api_key", value: apiKeys?.fastForex)
         ]
+    }
+}
+
+struct RequestEventHandler: HTTPRequestEventHandler {
+    let saveAPIKeysUseCase: SaveAPIKeysUseCaseProtocol
+
+    func before() async {
+        try? await self.saveAPIKeysUseCase.perform()
     }
 }

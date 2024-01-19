@@ -9,11 +9,11 @@ import Core_DataBaseStorage
 import CoreSpecific_FastForexAPI
 import CoreSpecific_Primitives
 
-public protocol FiatCurrenciesRatesRepositoryProtocol {
-    func read(from dataSource: RepositoryDataSource, for baseCode: String) async throws -> FiatCurrenciesRates
+public protocol FiatAssetsRatesRepositoryProtocol {
+    func read(from dataSource: RepositoryDataSource, for baseCode: String) async throws -> FiatAssetsRates
 }
 
-public final class FiatCurrenciesRatesRepository: FiatCurrenciesRatesRepositoryProtocol {
+public final class FiatAssetsRatesRepository: FiatAssetsRatesRepositoryProtocol {
     // MARK: Private properties
     private let fastForexAPI: FastForexAPIProtocol
     private let dataBaseStorage: DataBaseStorageProtocol
@@ -27,15 +27,15 @@ public final class FiatCurrenciesRatesRepository: FiatCurrenciesRatesRepositoryP
         self.dataBaseStorage = dataBaseStorage
     }
 
-    // MARK: - FiatCurrenciesRepositoryProtocol
-    public func read(from dataSource: RepositoryDataSource, for baseCode: String) async throws -> FiatCurrenciesRates {
+    // MARK: - FiatAssetsRepositoryProtocol
+    public func read(from dataSource: RepositoryDataSource, for baseCode: String) async throws -> FiatAssetsRates {
         switch dataSource {
         case .backend:
             let request = FastForexAPI.Endpoint.FetchAll.GETRequest(from: baseCode)
 
             do {
                 let response = try await fastForexAPI.request(request)
-                let fiatCurrenciesRates = FiatCurrenciesRatesFactory.make(from: response)
+                let fiatCurrenciesRates = FiatAssetsRatesFactory.make(from: response)
 
                 await dataBaseStorage.save(fiatCurrenciesRates)
 
@@ -43,13 +43,13 @@ public final class FiatCurrenciesRatesRepository: FiatCurrenciesRatesRepositoryP
             } catch {
                 throw RepositoryError(request.castError(error))
             }
-        case .cache:
-            let fiatCurrenciesRates = await dataBaseStorage.retrieveAll(of: FiatCurrenciesRates.self) { model in
+        case .cachePreferred:
+            let fiatCurrenciesRates = await dataBaseStorage.retrieveAll(of: FiatAssetsRates.self) { model in
                 model.baseCode == baseCode
             }
             
             if fiatCurrenciesRates.isEmpty {
-                throw RepositoryError.cacheEmpty
+                return try await read(from: .backend, for: baseCode)
             } else {
                 return fiatCurrenciesRates[0]
             }
@@ -58,12 +58,11 @@ public final class FiatCurrenciesRatesRepository: FiatCurrenciesRatesRepositoryP
 }
 
 // MARK: - Types
-extension FiatCurrenciesRatesRepository {
+extension FiatAssetsRatesRepository {
     public enum RepositoryError: Error {
         case networkFailed
         case requestFailed
         case unknown
-        case cacheEmpty
 
         init(_ apiError: APIError<NoneModel>) {
             switch apiError {

@@ -5,10 +5,10 @@
 
 import CoreSpecific_FastForexAPI
 
-enum FiatCurrenciesFactory {
-    static func make(from response: FastForexAPI.Endpoint.Currencies.ResponseContainer) -> [FiatCurrency] {
+enum FiatAssetsFactory {
+    static func make(from response: FastForexAPI.Endpoint.Currencies.ResponseContainer) -> [FiatAsset] {
         response.currencies.map {
-            FiatCurrency(
+            FiatAsset(
                 code: $0.key,
                 name: $0.value
             )

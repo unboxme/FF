@@ -9,11 +9,11 @@ import Core_DataBaseStorage
 import CoreSpecific_Primitives
 import CoreSpecific_FastForexAPI
 
-public protocol FiatCurrenciesRepositoryProtocol {
-    func read(from dataSource: RepositoryDataSource) async throws -> [FiatCurrency]
+public protocol FiatAssetsRepositoryProtocol {
+    func read(from dataSource: RepositoryDataSource) async throws -> [FiatAsset]
 }
 
-public final class FiatCurrenciesRepository: FiatCurrenciesRepositoryProtocol {
+public final class FiatAssetsRepository: FiatAssetsRepositoryProtocol {
     // MARK: Private properties
     private let fastForexAPI: FastForexAPIProtocol
     private let dataBaseStorage: DataBaseStorageProtocol
@@ -27,15 +27,15 @@ public final class FiatCurrenciesRepository: FiatCurrenciesRepositoryProtocol {
         self.dataBaseStorage = dataBaseStorage
     }
 
-    // MARK: - FiatCurrenciesRepositoryProtocol
-    public func read(from dataSource: RepositoryDataSource) async throws -> [FiatCurrency] {
+    // MARK: - FiatAssetsRepositoryProtocol
+    public func read(from dataSource: RepositoryDataSource) async throws -> [FiatAsset] {
         switch dataSource {
         case .backend:
             let request = FastForexAPI.Endpoint.Currencies.GETRequest()
 
             do {
                 let response = try await fastForexAPI.request(request)
-                let fiatCurrencies = FiatCurrenciesFactory.make(from: response)
+                let fiatCurrencies = FiatAssetsFactory.make(from: response)
 
                 await dataBaseStorage.save(fiatCurrencies)
 
@@ -43,11 +43,11 @@ public final class FiatCurrenciesRepository: FiatCurrenciesRepositoryProtocol {
             } catch {
                 throw RepositoryError(request.castError(error))
             }
-        case .cache:
-            let fiatCurrencies = await dataBaseStorage.retrieveAll(of: FiatCurrency.self)
+        case .cachePreferred:
+            let fiatCurrencies = await dataBaseStorage.retrieveAll(of: FiatAsset.self)
 
             if fiatCurrencies.isEmpty {
-                throw RepositoryError.cacheEmpty
+                return try await read(from: .backend)
             } else {
                 return fiatCurrencies
             }
@@ -56,12 +56,11 @@ public final class FiatCurrenciesRepository: FiatCurrenciesRepositoryProtocol {
 }
 
 // MARK: - Types
-extension FiatCurrenciesRepository {
+extension FiatAssetsRepository {
     public enum RepositoryError: Error {
         case networkFailed
         case requestFailed
         case unknown
-        case cacheEmpty
 
         init(_ apiError: APIError<NoneModel>) {
             switch apiError {

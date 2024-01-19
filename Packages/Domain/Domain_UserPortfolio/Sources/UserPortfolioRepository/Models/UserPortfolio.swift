@@ -8,11 +8,15 @@ import Core_DataBaseStorage
 import CoreSpecific_Primitives
 
 public struct UserPortfolio {
-    let id: String
-    let name: String
-    let currencyCode: String
-    let currencyType: CurrencyType
-    let balance: Decimal
+    public let id: String
+    public let name: String
+    public let assets: [UserPortfolioAsset]
+
+    public init(id: String, name: String, assets: [UserPortfolioAsset]) {
+        self.id = id
+        self.name = name
+        self.assets = assets
+    }
 }
 
 public final class UserPortfolioDataBaseModel: Object {
@@ -21,11 +25,7 @@ public final class UserPortfolioDataBaseModel: Object {
     @Persisted
     public fileprivate(set) var name: String
     @Persisted
-    public fileprivate(set) var currencyCode: String
-    @Persisted
-    public fileprivate(set) var currencyType: CurrencyType
-    @Persisted
-    public fileprivate(set) var balance: Decimal128
+    public fileprivate(set) var assets: List<UserPortfolioAssetDataBaseModel>
 }
 
 extension UserPortfolio: DataBaseStorable {
@@ -33,9 +33,7 @@ extension UserPortfolio: DataBaseStorable {
         let model = UserPortfolioDataBaseModel()
         model.id = id
         model.name = name
-        model.currencyCode = currencyCode
-        model.currencyType = currencyType
-        model.balance = Decimal128(value: balance)
+        model.assets.append(objectsIn: assets.map { $0.makeDataBaseModel() })
         return model
     }
 
@@ -43,9 +41,7 @@ extension UserPortfolio: DataBaseStorable {
         UserPortfolio(
             id: model.id,
             name: model.name,
-            currencyCode: model.currencyCode,
-            currencyType: model.currencyType,
-            balance: model.balance.decimalValue
+            assets: model.assets.map { UserPortfolioAsset.make(from: $0) }
         )
     }
 }

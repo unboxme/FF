@@ -12,6 +12,10 @@ public protocol HTTPClientProtocol: AnyObject {
     func request(_ request: HTTPRequest) async throws -> Data
 }
 
+public protocol HTTPRequestEventHandler {
+    func before() async
+}
+
 public final class HTTPClient: HTTPClientProtocol {
     // MARK: Public properties
     public weak var requestModifiersSource: HTTPRequestModifiersSource?
@@ -19,22 +23,22 @@ public final class HTTPClient: HTTPClientProtocol {
     // MARK: Private properties
     private let baseURL: URL
     private let session: URLSession
-    private let delayedConfiguration: (() async -> Void)?
+    private let requestEventHandler: HTTPRequestEventHandler?
 
     // MARK: Init
     public init(
         session: URLSession,
         baseURL: URL,
-        delayedConfiguration: (() async -> Void)? = nil
+        requestEventHandler: HTTPRequestEventHandler? = nil
     ) {
         self.session = session
         self.baseURL = baseURL
-        self.delayedConfiguration = delayedConfiguration
+        self.requestEventHandler = requestEventHandler
     }
 
     // MARK: HTTPClientProtocol
     public func request(_ request: HTTPRequest) async throws -> Data {
-        await delayedConfiguration?()
+        await requestEventHandler?.before()
         let urlRequest = try makeURLRequest(for: request)
 
         let (data, response) = try await session.data(for: urlRequest)

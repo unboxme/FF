@@ -5,12 +5,12 @@
 
 import CoreSpecific_FastForexAPI
 
-enum FiatCurrenciesRatesFactory {
-    static func make(from response: FastForexAPI.Endpoint.FetchAll.ResponseContainer) -> FiatCurrenciesRates {
-        FiatCurrenciesRates(
+enum FiatAssetsRatesFactory {
+    static func make(from response: FastForexAPI.Endpoint.FetchAll.ResponseContainer) -> FiatAssetsRates {
+        FiatAssetsRates(
             baseCode: response.base,
             rates: response.results.map {
-                FiatCurrencyRate(
+                FiatAssetRate(
                     code: $0.key,
                     rate: $0.value
                 )
