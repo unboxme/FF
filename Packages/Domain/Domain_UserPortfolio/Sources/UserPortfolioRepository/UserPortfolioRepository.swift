@@ -3,9 +3,12 @@
 //  Copyright © Pavel Puzyrev. All rights reserved.
 //
 
+import Combine
 import Core_DataBaseStorage
 
 public protocol UserPortfolioRepositoryProtocol: AnyObject {
+    var updatesPublisher: AnyPublisher<UserPortfolio, Never> { get }
+
     func create(_ userPortfolio: UserPortfolio) async
     func read() async -> [UserPortfolio]
     func update(_ userPortfolio: UserPortfolio) async
@@ -13,7 +16,13 @@ public protocol UserPortfolioRepositoryProtocol: AnyObject {
 }
 
 public final class UserPortfolioRepository: UserPortfolioRepositoryProtocol {
+    // MARK: Public properties
+    public var updatesPublisher: AnyPublisher<UserPortfolio, Never> {
+        updatesSubject.eraseToAnyPublisher()
+    }
+
     // MARK: Private properties
+    private let updatesSubject = PassthroughSubject<UserPortfolio, Never>()
     private let dataBaseStorage: DataBaseStorageProtocol
 
     // MARK: Init
@@ -32,6 +41,7 @@ public final class UserPortfolioRepository: UserPortfolioRepositoryProtocol {
 
     public func update(_ userPortfolio: UserPortfolio) async {
         await dataBaseStorage.save(userPortfolio)
+        updatesSubject.send(userPortfolio)
     }
 
     public func delete(_ id: String) async {

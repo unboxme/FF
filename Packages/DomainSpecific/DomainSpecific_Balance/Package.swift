@@ -12,12 +12,17 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "Domain_Currencies"),
+        .package(path: "Domain_UserPortfolio"),
+        .package(path: "CoreSpecific_Primitives")
     ],
     targets: [
         .target(
             name: "DomainSpecific_Balance",
             dependencies: [
-                // Dependencies ...
+                .byName(name: "Domain_Currencies"),
+                .byName(name: "Domain_UserPortfolio"),
+                .byName(name: "CoreSpecific_Primitives")
             ],
             path: "Sources"
         )

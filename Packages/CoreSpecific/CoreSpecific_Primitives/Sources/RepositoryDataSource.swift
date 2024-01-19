@@ -5,5 +5,5 @@
 
 public enum RepositoryDataSource {
     case backend
-    case cache
+    case cachePreferred
 }

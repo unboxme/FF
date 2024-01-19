@@ -5,10 +5,9 @@
 
 import Core_DataBaseStorage
 
-public enum CurrencyType: String {
+public enum AssetType: String {
     case fiat
-    case crypto
 }
 
-extension CurrencyType: PersistableEnum { }
+extension AssetType: PersistableEnum { }
 

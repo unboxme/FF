@@ -6,28 +6,28 @@
 import Foundation
 import Core_DataBaseStorage
 
-public struct FiatCurrency {
+public struct FiatAsset {
     public let code: String
     public let name: String
 }
 
-public final class FiatCurrencyDataBaseModel: Object {
+public final class FiatAssetDataBaseModel: Object {
     @Persisted(primaryKey: true)
     public fileprivate(set) var code: String
     @Persisted
     public fileprivate(set) var name: String
 }
 
-extension FiatCurrency: DataBaseStorable {
-    public func makeDataBaseModel() -> FiatCurrencyDataBaseModel {
-        let model = FiatCurrencyDataBaseModel()
+extension FiatAsset: DataBaseStorable {
+    public func makeDataBaseModel() -> FiatAssetDataBaseModel {
+        let model = FiatAssetDataBaseModel()
         model.code = code
         model.name = name
         return model
     }
 
-    public static func make(from model: FiatCurrencyDataBaseModel) -> FiatCurrency {
-        FiatCurrency(
+    public static func make(from model: FiatAssetDataBaseModel) -> FiatAsset {
+        FiatAsset(
             code: model.code,
             name: model.name
         )
